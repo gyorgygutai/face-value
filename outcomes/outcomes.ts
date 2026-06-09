@@ -1,34 +1,22 @@
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
-import type { RequestPayload } from "@/types/schema"
+import type { RequestPayload } from "@/app/inference-api"
 
-export type Outcome = {
+export type Outcome = Pick<RequestPayload, "prompt" | "width" | "height" | "input_image"> & {
   id: string
   title: string
   order: number
 }
 
-export type OutcomeFull = Outcome & RequestPayload
-
 const outcomesDir = path.join(process.cwd(), "outcomes")
 
-export function getOutcomes(): Outcome[] {
-  const files = fs.readdirSync(outcomesDir).filter((f) => f.endsWith(".md"))
-  return files
+const outcomeCache = new Map<string, Outcome>(
+  fs.readdirSync(outcomesDir)
+    .filter((f) => f.endsWith(".md"))
     .map((file) => {
-      const { data } = matter(fs.readFileSync(path.join(outcomesDir, file), "utf-8"))
-      return { id: data.id as string, title: data.title as string, order: data.order as number }
-    })
-    .sort((a, b) => a.order - b.order)
-}
-
-export function getOutcomeFull(id: string): OutcomeFull | null {
-  const files = fs.readdirSync(outcomesDir).filter((f) => f.endsWith(".md"))
-  for (const file of files) {
-    const { data, content } = matter(fs.readFileSync(path.join(outcomesDir, file), "utf-8"))
-    if (data.id === id) {
-      return {
+      const { data, content } = matter(fs.readFileSync(path.join(outcomesDir, file), "utf-8"))
+      const outcome: Outcome = {
         id: data.id as string,
         title: data.title as string,
         order: data.order as number,
@@ -36,7 +24,16 @@ export function getOutcomeFull(id: string): OutcomeFull | null {
         height: data.height as number,
         width: data.width as number,
       }
-    }
-  }
-  return null
+      return [outcome.id, outcome]
+    })
+)
+
+export function getPublicOutcomes() {
+  return Array.from(outcomeCache.values())
+    .sort((a, b) => a.order - b.order)
+    .map(({ id, title, order }) => ({ id, title, order }))
+}
+
+export function getInferenceOutcome(id: string): Outcome | null {
+  return outcomeCache.get(id) ?? null
 }

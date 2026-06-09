@@ -1,66 +1,69 @@
-'use server'
+"use server"
 
 import { MAX_FILE_SIZE, ALLOWED_IMAGE_TYPES } from "@/constants"
-import { getOutcomeFull } from "@/outcomes"
-import type { RequestPayload, ResponsePayload } from "@/types/schema"
+import { getInferenceOutcome } from "@/outcomes"
+import { runInferenceWithPolling } from "./inference-api"
 import sharp from "sharp"
-import runpodSdk from "runpod-sdk"
-const { INFERENCE_TOKEN, INFERENCE_ENDPOINT_ID } = process.env
 
-const runpodInstance = runpodSdk(INFERENCE_TOKEN as string) // TODO
-const inferenceEndpoint = runpodInstance.endpoint(INFERENCE_ENDPOINT_ID as string) // TODO
+export enum ActionError {
+  SERVER_TIMEOUT = "SERVER_TIMEOUT",
 
-export type FormState = {
-  image: string | null
-  error: string | null
+  OUTCOME_MISSING = "OUTCOME_MISSING",
+  OUTCOME_INVALID = "OUTCOME_INVALID",
+
+  INPUT_IMAGE_MISSING = "INPUT_IMAGE_MISSING",
+  INPUT_IMAGE_TOO_LARGE = "INPUT_IMAGE_TOO_LARGE",
+  INPUT_IMAGE_TYPE_NOT_ALLOWED = "INPUT_IMAGE_TYPE_NOT_ALLOWED",
 }
 
-// TODO needs to be properly typed
-export async function requestOutcome(_prev: FormState, formData: FormData): Promise<FormState> {
-  const file = formData.get("image")
-  const outcomeId = formData.get("outcomeId")
+export type ActionResult = { imageBase64: string } | { error: ActionError };
 
-  // TODO extract validation
+async function resizeImage(file: File) {
+  const buffer = await file.arrayBuffer()
+
+  return await sharp(Buffer.from(buffer))
+    .resize(512, 512, { fit: "inside" })
+    .toBuffer()
+}
+
+export async function requestOutcome(
+  _prev: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const file = formData.get("image")
+
   if (!(file instanceof File) || file.size === 0) {
-    return { image: null, error: "❌ Reference image is required" }
+    return { error: ActionError.INPUT_IMAGE_MISSING }
   }
 
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    return { image: null, error: "❌ Image must be JPEG, PNG, or WebP" }
+    return { error: ActionError.INPUT_IMAGE_TYPE_NOT_ALLOWED }
   }
 
   if (file.size > MAX_FILE_SIZE) {
-    return { image: null, error: "❌ Image exceeds 5MB limit" }
+    return { error: ActionError.INPUT_IMAGE_TOO_LARGE }
   }
 
+  const outcomeId = formData.get("outcomeId")
   if (typeof outcomeId !== "string" || !outcomeId) {
-    return { image: null, error: "❌ Outcome is required" }
+    return { error: ActionError.OUTCOME_MISSING }
   }
 
-  const outcome = getOutcomeFull(outcomeId)
+  const outcome = getInferenceOutcome(outcomeId)
   if (!outcome) {
-    return { image: null, error: "❌ Invalid outcome" }
+    return { error: ActionError.OUTCOME_INVALID }
   }
 
-  if (!inferenceEndpoint) {
-    return { image: null, error: "❌ Inference server not configured" }
-  }
-
-  const buffer = await file.arrayBuffer()
-  const resized = await sharp(Buffer.from(buffer))
-    .resize(512, 512, { fit: "inside" })
-    .toBuffer()
-
-  const input = {
-    ...outcome,
-    input_image: resized.toString("base64")
-  } as RequestPayload
+  const resizedImage = await resizeImage(file)
 
   try {
-    const response = await inferenceEndpoint.runSync({ input }) as { output: ResponsePayload }
+    const response = await runInferenceWithPolling({
+      ...outcome,
+      input_image: resizedImage.toString("base64"),
+    })
 
-    return { image: `data:image/png;base64,${response.output.image}`, error: null }
+    return { imageBase64: `data:image/png;base64,${response.output.image}` }
   } catch {
-     return { image: null, error: "❌ Inference server timed out" }
+    return { error: ActionError.SERVER_TIMEOUT }
   }
 }

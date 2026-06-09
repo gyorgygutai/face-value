@@ -1,8 +1,6 @@
 'use client'
 
-import type { Outcome } from "@/outcomes"
-
-export default function OutcomePicker({ outcomes }: { outcomes: Outcome[] }) {
+export default function OutcomePicker({ outcomes }: { outcomes: { id: string; title: string }[] }) {
   return (
     <>
       <label htmlFor="outcomeId">Outcome</label>

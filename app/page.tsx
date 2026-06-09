@@ -1,8 +1,8 @@
-import { getOutcomes } from "@/outcomes"
+import { getPublicOutcomes } from "@/outcomes"
 import ImageGenerationForm from "@/app/components/ImageGenerationForm"
 
 export default function Home() {
-  const outcomes = getOutcomes()
+  const outcomes = getPublicOutcomes()
 
   return (
     <main>

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "schema:generate": "node -e \"fetch('https://raw.githubusercontent.com/gyorgygutai/flux-klein-worker/main/schema.json').then(r=>r.json()).then(async s=>{const {compile}=await import('json-schema-to-typescript');const req=await compile(s.request,'RequestPayload');const res=await compile(s.response,'ResponsePayload');const fs=await import('fs');fs.writeFileSync('types/schema.ts',req+'\\n'+res);})\""
+    "schema:generate": "node -e \"fetch('https://raw.githubusercontent.com/gyorgygutai/flux-klein-worker/main/schema.json').then(r=>r.json()).then(async s=>{const {compile}=await import('json-schema-to-typescript');const req=await compile(s.request,'RequestPayload');const res=await compile(s.response,'ResponsePayload');const fs=await import('fs');fs.writeFileSync('app/inference-api/schema.ts',req+'\\n'+res);})\""
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/ramda": "^0.31.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
