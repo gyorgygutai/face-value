@@ -16,6 +16,9 @@
 - Image upload, validation, resize, base64
 - Inference payload + call, error propagation
 - `<a download>` for generated image
+- CF JWT verification in `middleware.ts` via `jose`, redirect on invalid token
+- Origin URL kept private via env vars, CF as only entry point
+- Env vars optional-gated — middleware no-op without CF vars set
 
 ## 🎁 Nice to Haves
 
@@ -25,13 +28,12 @@
 ## 🔐 Access
 
 - [ ] Configure Cloudflare Access email OTP for domain gating
-- [ ] `proxy.ts`: CF JWT verification with `jose` against CF public certs, redirect on invalid token
-- [ ] `await cookies()` for CF auth header injection into inference call
-- [ ] Ensure origin URL remains private — CF as only entry point
+- ~~`proxy.ts`: CF JWT verification with `jose` against CF public certs, redirect on invalid token~~ ✅
+- ~~Ensure origin URL remains private — CF as only entry point~~ ✅
 
 ## 🚀 Production Setup
 
-- [ ] `proxy.ts` routing logic (pre-auth, origin proxying only)
+- ~~`proxy.ts` routing logic (pre-auth, origin proxying only)~~ ✅
 - [ ] Enable React Compiler in `next.config.ts`
 - [ ] Complete `.agents/` definitions (`developer`, `doc-writer`, `test-engineer`)
 - [ ] Deploy

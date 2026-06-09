@@ -1,13 +1,16 @@
 # face-value
 
+[https://face-value.gyorgygutai.dev](https://face-value.gyorgygutai.dev/)
+
 ## What This Is
 
 - Upload a photo of yourself
 - Pick an outcome
 - Get a generated image back
 - A [Next.js 16](https://nextjs.org) feature showcase — all architectural decisions built around this
-- [FLUX.2 klein 9B](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B) as the image model
-- on-demand [RunPod Serverless](https://runpod.io) inference endpoint
+- [Flux.2 Klein 9B](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B) as the image model
+- [Flux Klein Worker](github.com/gyorgygutai/flux-klein-worker) in docker
+- On-demand [RunPod Serverless](https://runpod.io) inference endpoint
 - [Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/applications/) as auth
 - For fun, all done without a line of CSS
 

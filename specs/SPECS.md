@@ -1,4 +1,4 @@
-# SPECS.md
+# SPECS
 
 **Project goal**: a NextJS app demonstrating a selection of NextJS features - most introduced in the last 1.5 years.
 
@@ -53,7 +53,6 @@
   - User uploads their own image
   - Resized to max 512×512 on server before sending to inference server
   - Sent as base64
-
 
 ### Styling and Layout
 

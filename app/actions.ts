@@ -3,18 +3,8 @@
 import { MAX_FILE_SIZE, ALLOWED_IMAGE_TYPES } from "@/constants"
 import { getInferenceOutcome } from "@/outcomes"
 import { runInferenceWithPolling } from "./inference-api"
+import { ActionError } from './types'
 import sharp from "sharp"
-
-export enum ActionError {
-  SERVER_TIMEOUT = "SERVER_TIMEOUT",
-
-  OUTCOME_MISSING = "OUTCOME_MISSING",
-  OUTCOME_INVALID = "OUTCOME_INVALID",
-
-  INPUT_IMAGE_MISSING = "INPUT_IMAGE_MISSING",
-  INPUT_IMAGE_TOO_LARGE = "INPUT_IMAGE_TOO_LARGE",
-  INPUT_IMAGE_TYPE_NOT_ALLOWED = "INPUT_IMAGE_TYPE_NOT_ALLOWED",
-}
 
 export type ActionResult = { imageBase64: string } | { error: ActionError };
 

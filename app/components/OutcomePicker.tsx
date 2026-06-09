@@ -1,6 +1,11 @@
 'use client'
+import { getPublicOutcomes } from "@/outcomes"
 
-export default function OutcomePicker({ outcomes }: { outcomes: { id: string; title: string }[] }) {
+type OutcomePickerProps = {
+  outcomes: ReturnType<typeof getPublicOutcomes>
+}
+
+export default function OutcomePicker({ outcomes }: OutcomePickerProps) {
   return (
     <>
       <label htmlFor="outcomeId">Outcome</label>

@@ -5,9 +5,7 @@ export const metadata: Metadata = {
   description: "AI face transformation",
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+export default function RootLayout({ children }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (

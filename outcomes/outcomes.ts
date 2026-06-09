@@ -3,7 +3,7 @@ import path from "path"
 import matter from "gray-matter"
 import type { RequestPayload } from "@/app/inference-api"
 
-export type Outcome = Pick<RequestPayload, "prompt" | "width" | "height" | "input_image"> & {
+export type Outcome = Pick<RequestPayload, "prompt" | "width" | "height"> & {
   id: string
   title: string
   order: number
@@ -31,7 +31,7 @@ const outcomeCache = new Map<string, Outcome>(
 export function getPublicOutcomes() {
   return Array.from(outcomeCache.values())
     .sort((a, b) => a.order - b.order)
-    .map(({ id, title, order }) => ({ id, title, order }))
+    .map(({ id, title }) => ({ id, title }))
 }
 
 export function getInferenceOutcome(id: string): Outcome | null {
