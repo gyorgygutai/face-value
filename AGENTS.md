@@ -38,11 +38,3 @@
 
 - Bump version when requested adhering to semver
 - Conventional commits, sentence case, no period
-
-## Agent Index
-
-Ask the user what agent role to take.
-
-- **Developer**: [developer.agent.md](./.agents/developer.agent.md) — use `/code`
-- **Test Engineer**: [test-engineer.agent.md](./.agents/test-engineer.agent.md) — use `/test`
-- **Doc Writer**: [doc-writer.agent.md](./.agents/doc-writer.agent.md) — use `/docs`

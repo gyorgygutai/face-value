@@ -6,7 +6,7 @@
 
 - **Reference image** — the face photo submitted by the user for transformation
 - **Image gen prompt** — the text instruction sent to the inference server, sourced from an outcome `.md` file, never exposed to client
-- **Inference server** — Draw Things gRPC server running in Docker on RunPod, receives reference image + prompt, returns generated image
+- **Inference server** — tThings gRPC server running in Docker on RunPod, receives reference image + prompt, returns generated image
 - **Outcome** — a `.md` file in `/outcomes` defining an image gen prompt, identified by id; also the transformation effect the user selects
 - **Generated image** — the image returned by the inference server after processing reference image + prompt
 
@@ -74,7 +74,7 @@
 
 ### Inference Backend
 
-- On-demand Draw Things gRPC server in Docker on RunPod serverless
+- On-demand inference server in Docker on RunPod serverless
 - Model: `flux_2_klein_9b_q6p.ckpt` (~7.3GB)
 
 ### Auth
